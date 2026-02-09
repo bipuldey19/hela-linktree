@@ -18,8 +18,8 @@ export const updatePostSchema = createPostSchema.partial().extend({
 
 export const updateSettingsSchema = z.object({
   siteTitle: z.string().min(1).max(100),
-  siteDescription: z.string().max(500),
   siteUrl: z.string().max(200).optional(),
+  globalMetaDescription: z.string().max(160).optional(),
   heroTitle: z.string().max(200),
   heroSubtitle: z.string().max(500),
   heroImage: z.string().optional().nullable(),

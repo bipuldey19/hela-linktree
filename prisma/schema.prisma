@@ -19,8 +19,8 @@ model User {
 model SiteSettings {
   id              String  @id @default("singleton")
   siteTitle       String  @default("My Site")
-  siteDescription String  @default("")
   siteUrl         String  @default("")
+  globalMetaDescription String @default("")
   siteLogo        String?
 
   heroTitle    String  @default("Welcome")

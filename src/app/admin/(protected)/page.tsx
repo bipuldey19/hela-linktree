@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth-utils";
 
 export default async function AdminDashboard() {
+  await requireAuth();
   const [publishedCount, draftCount, linkCount, recentPosts] =
     await Promise.all([
       prisma.blogPost.count({ where: { published: true } }),

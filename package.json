@@ -12,7 +12,8 @@
     "db:studio": "prisma studio",
     "db:reset": "prisma db push --force-reset && prisma db seed",
     "setup": "npm ci && npm run db:push && npm run db:seed && npm run build",
-    "prod:init": "npm ci && npm run db:push && npm run db:seed && npm run build && npm start"
+    "prod:init": "npm ci && npm run build && npm start",
+    "db:migrate:deploy": "prisma migrate deploy"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

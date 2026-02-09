@@ -70,16 +70,7 @@ export default function HeroSection({
         )}
       </div>
 
-      {/* Site description card - displayed after hero texts */}
-      {description && (
-        <div className="relative z-10 px-5 pb-4">
-          <div className="animate-fade-in-up stagger-3 max-w-md mx-auto bg-white/90 backdrop-blur-sm rounded-xl border border-stone-200/60 px-5 py-4 shadow-sm">
-            <p className="text-center text-[15px] font-medium text-stone-700 leading-relaxed">
-              {description}
-            </p>
-          </div>
-        </div>
-      )}
+
     </section>
   );
 }

@@ -13,7 +13,7 @@ export default function LinkList({ links }: { links: LinkItem[] }) {
   if (links.length === 0) return null;
 
   return (
-    <section className="max-w-md mx-auto px-5 py-6 space-y-3">
+    <section className="max-w-4xl mx-auto px-5 py-12 space-y-3">
       {links.map((link, i) => (
         <div
           key={link.id}

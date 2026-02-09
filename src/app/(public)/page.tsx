@@ -4,6 +4,19 @@ import { RECENT_POSTS_COUNT } from "@/lib/constants";
 import HeroSection from "@/components/public/HeroSection";
 import LinkList from "@/components/public/LinkList";
 import BlogGrid from "@/components/public/BlogGrid";
+import type { Metadata } from "next"; // Import Metadata type
+
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await prisma.siteSettings.findUnique({
+    where: { id: "singleton" },
+    select: { globalMetaDescription: true, siteTitle: true }, // Select only necessary fields
+  });
+
+  return {
+    title: settings?.siteTitle || "My Site", // Assuming siteTitle is also needed for metadata
+    description: settings?.globalMetaDescription || "A personal linktree site.",
+  };
+}
 
 export default async function HomePage() {
   const [settings, links, recentPosts] = await Promise.all([
@@ -32,7 +45,6 @@ export default async function HomePage() {
       <HeroSection
         title={settings?.heroTitle || "Welcome"}
         subtitle={settings?.heroSubtitle || ""}
-        description={settings?.siteDescription || ""}
         image={settings?.heroImage || null}
         logo={settings?.siteLogo || null}
       />

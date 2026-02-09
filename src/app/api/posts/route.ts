@@ -6,30 +6,39 @@ import { sanitizeHtml } from "@/lib/sanitize";
 import { generateSlug, ensureUniqueSlug } from "@/lib/slug";
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const page = parseInt(searchParams.get("page") || "1");
-  const limit = parseInt(searchParams.get("limit") || "20");
-  const publishedOnly = searchParams.get("published") === "true";
+  try {
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "20");
+    const publishedOnly = searchParams.get("published") === "true";
 
-  const where = publishedOnly ? { published: true } : {};
+    const where = publishedOnly ? { published: true } : {};
 
-  const [posts, total] = await Promise.all([
-    prisma.blogPost.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-      skip: (page - 1) * limit,
-      take: limit,
-    }),
-    prisma.blogPost.count({ where }),
-  ]);
+    const [posts, total] = await Promise.all([
+      prisma.blogPost.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.blogPost.count({ where }),
+    ]);
 
-  return NextResponse.json({ posts, total, page, totalPages: Math.ceil(total / limit) });
+    return NextResponse.json({ posts, total, page, totalPages: Math.ceil(total / limit) });
+  } catch (error) {
+    console.error("Error fetching posts:", error); // Log the detailed error
+    return NextResponse.json(
+      { error: "Failed to fetch posts due to an internal server error." },
+      { status: 500 }
+    );
+  }
 }
 
 export async function POST(request: Request) {
   try {
     await requireAuth();
-  } catch {
+  } catch (authError) {
+    console.warn("Unauthorized attempt to create post:", authError); // Log unauthorized attempts
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -37,39 +46,48 @@ export async function POST(request: Request) {
   const parsed = createPostSchema.safeParse(body);
 
   if (!parsed.success) {
+    console.warn("Post creation validation failed:", parsed.error.flatten()); // Log validation failures
     return NextResponse.json(
       { error: "Validation failed", details: parsed.error.flatten() },
       { status: 400 }
     );
   }
 
-  const { title, content, published, ...rest } = parsed.data;
+  try {
+    const { title, content, published, ...rest } = parsed.data;
 
-  const slug = await ensureUniqueSlug(generateSlug(title));
-  const sanitizedContent = sanitizeHtml(content);
+    const slug = await ensureUniqueSlug(generateSlug(title));
+    const sanitizedContent = sanitizeHtml(content);
 
-  const excerpt =
-    rest.excerpt ||
-    sanitizedContent
-      .replace(/<[^>]*>/g, "")
-      .substring(0, 160)
-      .trim();
+    const excerpt =
+      rest.excerpt ||
+      sanitizedContent
+        .replace(/<[^>]*>/g, "")
+        .substring(0, 160)
+        .trim();
 
-  const post = await prisma.blogPost.create({
-    data: {
-      title,
-      slug,
-      content: sanitizedContent,
-      excerpt,
-      published,
-      publishedAt: published ? new Date() : null,
-      heroImage: rest.heroImage,
-      metaTitle: rest.metaTitle,
-      metaDescription: rest.metaDescription,
-      metaKeywords: rest.metaKeywords,
-      ogImage: rest.ogImage,
-    },
-  });
+    const post = await prisma.blogPost.create({
+      data: {
+        title,
+        slug,
+        content: sanitizedContent,
+        excerpt,
+        published,
+        publishedAt: published ? new Date() : null,
+        heroImage: rest.heroImage,
+        metaTitle: rest.metaTitle,
+        metaDescription: rest.metaDescription,
+        metaKeywords: rest.metaKeywords,
+        ogImage: rest.ogImage,
+      },
+    });
 
-  return NextResponse.json(post, { status: 201 });
+    return NextResponse.json(post, { status: 201 });
+  } catch (error) {
+    console.error("Error creating post:", error); // Log the detailed error
+    return NextResponse.json(
+      { error: "Failed to create post due to an internal server error." },
+      { status: 500 }
+    );
+  }
 }

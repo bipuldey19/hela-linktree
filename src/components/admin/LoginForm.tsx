@@ -29,7 +29,6 @@ export default function LoginForm() {
         setError("Invalid email or password");
       } else {
         router.push("/admin");
-        router.refresh();
       }
     } catch {
       setError("Something went wrong. Please try again.");

@@ -9,8 +9,8 @@ import { useToast } from "@/components/ui/Toast";
 
 interface Settings {
   siteTitle: string;
-  siteDescription: string;
   siteUrl: string;
+  globalMetaDescription: string;
   siteLogo: string | null;
   heroTitle: string;
   heroSubtitle: string;
@@ -68,6 +68,13 @@ export default function SettingsForm({
             onChange={(e) => update("siteUrl", e.target.value)}
             placeholder="https://your-domain.com"
           />
+          <Textarea
+            label="Site Meta Description"
+            value={form.globalMetaDescription}
+            onChange={(e) => update("globalMetaDescription", e.target.value)}
+            placeholder="A short description for search engines"
+            maxLength={160}
+          />
         </div>
       </div>
 
@@ -98,12 +105,7 @@ export default function SettingsForm({
             onChange={(e) => update("heroSubtitle", e.target.value)}
             placeholder="A short tagline shown under the title"
           />
-          <Textarea
-            label="Site Description"
-            value={form.siteDescription}
-            onChange={(e) => update("siteDescription", e.target.value)}
-            placeholder="Displayed in a card below the hero title and tagline"
-          />
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Hero Background Image

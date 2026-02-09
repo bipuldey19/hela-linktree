@@ -14,7 +14,6 @@ export default async function SettingsPage() {
     <SettingsPageClient
       settings={{
         siteTitle: settings?.siteTitle || "My Site",
-        siteDescription: settings?.siteDescription || "",
         siteUrl: settings?.siteUrl || "",
         siteLogo: settings?.siteLogo || null,
         heroTitle: settings?.heroTitle || "Welcome",

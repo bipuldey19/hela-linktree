@@ -9,8 +9,8 @@ import type { ThemeConfig } from "@/types";
 interface Props {
   settings: {
     siteTitle: string;
-    siteDescription: string;
     siteUrl: string;
+    globalMetaDescription: string;
     siteLogo: string | null;
     heroTitle: string;
     heroSubtitle: string;

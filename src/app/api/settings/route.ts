@@ -13,8 +13,8 @@ export async function GET() {
       {
         id: "singleton",
         siteTitle: "My Site",
-        siteDescription: "",
         siteUrl: "",
+        globalMetaDescription: "",
         siteLogo: null,
         heroTitle: "Welcome",
         heroSubtitle: "",
